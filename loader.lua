@@ -1,8 +1,8 @@
 local modules = {
     "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/main/Speed.lua",
     "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/main/Jump.lua",
-    "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/main/Esp.lua"
-    "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/refs/heads/main/test.lua"
+    "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/main/Esp.lua",
+    "https://raw.githubusercontent.com/cnrpro5823/cinar-script-universal/main/test.lua",
 }
 
 for _, url in pairs(modules) do
