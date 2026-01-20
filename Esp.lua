@@ -3,7 +3,7 @@ local ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChil
 ScreenGui.Name = "ESPMenu"
 
 local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 200, 0, 150)
+Frame.Size = UDim2.new(0, 200, 0, 180)
 Frame.Position = UDim2.new(0, 20, 0, 100)
 Frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 
@@ -30,31 +30,52 @@ local espEnabled = false
 local function createESP(player)
     player.CharacterAdded:Connect(function(char)
         char:WaitForChild("HumanoidRootPart")
+        local humanoid = char:WaitForChild("Humanoid")
+
+        -- Box ESP
         local box = Instance.new("BoxHandleAdornment")
         box.Name = "ESPBox"
         box.Adornee = char.HumanoidRootPart
-        box.Size = char.HumanoidRootPart.Size * 5 -- kutu karakteri kaplasın
+        box.Size = Vector3.new(4,6,2) -- karakter boyutuna göre kutu
         box.Color3 = Color3.new(1,0,0)
         box.Transparency = 0.7
         box.ZIndex = 0
         box.AlwaysOnTop = true
         box.Parent = char.HumanoidRootPart
 
+        -- Name + HP + Weapon ESP
         local head = char:WaitForChild("Head")
         local esp = Instance.new("BillboardGui")
-        esp.Name = "ESPName"
+        esp.Name = "ESPInfo"
         esp.Adornee = head
-        esp.Size = UDim2.new(0,100,0,40)
+        esp.Size = UDim2.new(0,150,0,60)
         esp.StudsOffset = Vector3.new(0,2,0)
         esp.AlwaysOnTop = true
 
         local label = Instance.new("TextLabel", esp)
         label.Size = UDim2.new(1,0,1,0)
         label.BackgroundTransparency = 1
-        label.Text = player.Name
         label.TextColor3 = Color3.new(1,1,0)
         label.Font = Enum.Font.SourceSansBold
         label.TextScaled = true
+        label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
+
+        -- HP güncelleme
+        humanoid.HealthChanged:Connect(function(hp)
+            label.Text = player.Name .. " | HP: " .. math.floor(hp)
+        end)
+
+        -- Silah takibi
+        player.ChildAdded:Connect(function(tool)
+            if tool:IsA("Tool") then
+                label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health) .. " | Weapon: " .. tool.Name
+            end
+        end)
+        player.ChildRemoved:Connect(function(tool)
+            if tool:IsA("Tool") then
+                label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
+            end
+        end)
 
         esp.Parent = head
     end)
@@ -85,8 +106,8 @@ ToggleButton.MouseButton1Click:Connect(function()
                 end
             end
             if player.Character and player.Character:FindFirstChild("Head") then
-                if player.Character.Head:FindFirstChild("ESPName") then
-                    player.Character.Head.ESPName:Destroy()
+                if player.Character.Head:FindFirstChild("ESPInfo") then
+                    player.Character.Head.ESPInfo:Destroy()
                 end
             end
         end
