@@ -29,55 +29,57 @@ local espEnabled = false
 -- ESP Fonksiyonu
 local function createESP(player)
     player.CharacterAdded:Connect(function(char)
-        char:WaitForChild("HumanoidRootPart")
-        local humanoid = char:WaitForChild("Humanoid")
+        local hrp = char:WaitForChild("HumanoidRootPart", 10)
+        local head = char:FindFirstChild("Head") or char:FindFirstChild("UpperTorso")
+        local humanoid = char:WaitForChild("Humanoid", 10)
 
-        -- Box ESP
-        local box = Instance.new("BoxHandleAdornment")
-        box.Name = "ESPBox"
-        box.Adornee = char.HumanoidRootPart
-        box.Size = Vector3.new(4,6,2) -- karakter boyutuna göre kutu
-        box.Color3 = Color3.new(1,0,0)
-        box.Transparency = 0.7
-        box.ZIndex = 0
-        box.AlwaysOnTop = true
-        box.Parent = char.HumanoidRootPart
+        if hrp and head and humanoid then
+            -- Box ESP
+            local box = Instance.new("BoxHandleAdornment")
+            box.Name = "ESPBox"
+            box.Adornee = hrp
+            box.Size = Vector3.new(4,6,2)
+            box.Color3 = Color3.new(1,0,0)
+            box.Transparency = 0.7
+            box.AlwaysOnTop = true
+            box.ZIndex = 0
+            box.Parent = hrp
 
-        -- Name + HP + Weapon ESP
-        local head = char:WaitForChild("Head")
-        local esp = Instance.new("BillboardGui")
-        esp.Name = "ESPInfo"
-        esp.Adornee = head
-        esp.Size = UDim2.new(0,150,0,60)
-        esp.StudsOffset = Vector3.new(0,2,0)
-        esp.AlwaysOnTop = true
+            -- Info ESP (Name + HP + Weapon)
+            local esp = Instance.new("BillboardGui")
+            esp.Name = "ESPInfo"
+            esp.Adornee = head
+            esp.Size = UDim2.new(0,150,0,60)
+            esp.StudsOffset = Vector3.new(0,2,0)
+            esp.AlwaysOnTop = true
 
-        local label = Instance.new("TextLabel", esp)
-        label.Size = UDim2.new(1,0,1,0)
-        label.BackgroundTransparency = 1
-        label.TextColor3 = Color3.new(1,1,0)
-        label.Font = Enum.Font.SourceSansBold
-        label.TextScaled = true
-        label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
+            local label = Instance.new("TextLabel", esp)
+            label.Size = UDim2.new(1,0,1,0)
+            label.BackgroundTransparency = 1
+            label.TextColor3 = Color3.new(1,1,0)
+            label.Font = Enum.Font.SourceSansBold
+            label.TextScaled = true
+            label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
 
-        -- HP güncelleme
-        humanoid.HealthChanged:Connect(function(hp)
-            label.Text = player.Name .. " | HP: " .. math.floor(hp)
-        end)
+            -- HP güncelleme
+            humanoid.HealthChanged:Connect(function(hp)
+                label.Text = player.Name .. " | HP: " .. math.floor(hp)
+            end)
 
-        -- Silah takibi
-        player.ChildAdded:Connect(function(tool)
-            if tool:IsA("Tool") then
-                label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health) .. " | Weapon: " .. tool.Name
-            end
-        end)
-        player.ChildRemoved:Connect(function(tool)
-            if tool:IsA("Tool") then
-                label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
-            end
-        end)
+            -- Silah takibi
+            player.ChildAdded:Connect(function(tool)
+                if tool:IsA("Tool") then
+                    label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health) .. " | Weapon: " .. tool.Name
+                end
+            end)
+            player.ChildRemoved:Connect(function(tool)
+                if tool:IsA("Tool") then
+                    label.Text = player.Name .. " | HP: " .. math.floor(humanoid.Health)
+                end
+            end)
 
-        esp.Parent = head
+            esp.Parent = head
+        end
     end)
 end
 
