@@ -1,9 +1,10 @@
-for _, player in pairs(game.Players:GetPlayers()) do
-    if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-        if not player.Character.Head:FindFirstChild("ESP") then
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(char)
+        local head = char:WaitForChild("Head")
+        if not head:FindFirstChild("ESP") then
             local esp = Instance.new("BillboardGui")
             esp.Name = "ESP"
-            esp.Adornee = player.Character.Head
+            esp.Adornee = head
             esp.Size = UDim2.new(0, 100, 0, 40)
             esp.StudsOffset = Vector3.new(0, 2, 0)
             esp.AlwaysOnTop = true
@@ -17,7 +18,7 @@ for _, player in pairs(game.Players:GetPlayers()) do
             label.Font = Enum.Font.SourceSansBold
             label.TextScaled = true
 
-            esp.Parent = player.Character.Head
+            esp.Parent = head
         end
-    end
-end
+    end)
+end)
