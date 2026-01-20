@@ -1,4 +1,5 @@
-game.Players.PlayerAdded:Connect(function(player)
+-- ESP sürekli çalışsın ve yeni oyunculara da eklensin
+local function addESP(player)
     player.CharacterAdded:Connect(function(char)
         local head = char:WaitForChild("Head")
         if not head:FindFirstChild("ESP") then
@@ -21,4 +22,18 @@ game.Players.PlayerAdded:Connect(function(player)
             esp.Parent = head
         end
     end)
+end
+
+-- Mevcut oyuncular için çalıştır
+for _, player in pairs(game.Players:GetPlayers()) do
+    if player ~= game.Players.LocalPlayer then
+        addESP(player)
+    end
+end
+
+-- Yeni oyuncular için çalıştır
+game.Players.PlayerAdded:Connect(function(player)
+    if player ~= game.Players.LocalPlayer then
+        addESP(player)
+    end
 end)
